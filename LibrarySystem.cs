@@ -100,9 +100,12 @@ namespace Hashcode2020CSharp
         {
             using (StreamReader fileInput = new StreamReader(input))
             {
-                firstLine = Parsing(fileInput.ReadLine().Split());
-                bs = Parsing(fileInput.ReadLine().Split());
-
+                try
+                {
+                    firstLine = Parsing(fileInput.ReadLine().Split());
+                    bs = Parsing(fileInput.ReadLine().Split());
+                } catch (Exception e) { }
+                
                 int i = 0;
 
                 string ln;
@@ -112,15 +115,21 @@ namespace Hashcode2020CSharp
                 {
                     if (pairOrNot)
                     {
-                        fl = Parsing(ln.Split());
+                        try
+                        {
+                            fl = Parsing(ln.Split());
+                        } catch (Exception e) { }
 
                         pairOrNot = false;
                     }
                     else
                     {
-                        sl = Parsing(ln.Split());
-                        libraries.Add(new Library(fl, sl, i));
-                        i++;
+                        try
+                        {
+                            sl = Parsing(ln.Split());
+                            libraries.Add(new Library(fl, sl, i));
+                            i++;
+                        } catch (Exception e) { }
 
                         pairOrNot = true;
                     }

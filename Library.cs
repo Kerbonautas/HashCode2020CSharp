@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Hashcode2020CSharp
@@ -23,7 +24,7 @@ namespace Hashcode2020CSharp
             points = 0;
             this.id = id;
 
-            books = sl;
+            books = sl.Distinct().ToArray();
         }
 
         public void SetFactor()
