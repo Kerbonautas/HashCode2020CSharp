@@ -8,9 +8,10 @@ namespace Hashcode2020CSharp
     {
         public int numberOfBooks { get; set; }
         public int timeSignUp { get; set; }
+        public int timeScan { get; set; }
         public int booksPerDay { get; set; }
         public int id { get; set; }
-        public int[] books { get; set; }
+        public int[] books { get; set; } //TODO: delete duplicates in constructor
         public int points { get; set; }
         public double factor { get; set; }
 
@@ -27,7 +28,8 @@ namespace Hashcode2020CSharp
 
         public void SetFactor()
         {
-            factor = points / (timeSignUp + (Math.Round((double)books.Length / numberOfBooks, 0, MidpointRounding.AwayFromZero)));
+            timeScan = (int)Math.Round((double)books.Length / booksPerDay, 0, MidpointRounding.AwayFromZero);
+            factor = points / (timeSignUp + timeScan);
         }
     }
 }

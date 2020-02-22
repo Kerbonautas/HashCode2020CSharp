@@ -13,8 +13,6 @@ namespace Hashcode2020CSharp
             //LibrarySystem D = new LibrarySystem(@".\GoogleFiles\d_tough_choices.txt", @".\GoogleFiles\OutputD.txt");
             //LibrarySystem E = new LibrarySystem(@".\GoogleFiles\e_so_many_books.txt", @".\GoogleFiles\OutputE.txt");
             //LibrarySystem F = new LibrarySystem(@".\GoogleFiles\f_libraries_of_the_world.txt", @".\GoogleFiles\OutputF.txt");
-            Console.WriteLine("Pulse a key to end program");
-            Console.ReadKey();
         }
     }
 }
