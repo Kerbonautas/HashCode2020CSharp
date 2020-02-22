@@ -30,13 +30,14 @@ namespace Hashcode2020CSharp
         private void Run()
         {
             Reader();
-            CalculateFactor();
-
+            
             StringBuilder sb = new StringBuilder();
             int count = 0;
 
             do
             {
+
+                CalculateFactor();
                 int idMax = 0;
                 double max = 0;
                 foreach (Library lb in libraries)
@@ -60,10 +61,11 @@ namespace Hashcode2020CSharp
                 sb.Remove(sb.Length - 1, 1);
                 sb.Append("\n");
 
-                RemoveScanned();
-
                 libraries.Remove(maxFactorLibrary);
                 firstLine[2] -= maxFactorLibrary.timeScan + maxFactorLibrary.timeSignUp;
+
+                RemoveScanned(maxFactorLibrary.books);
+
                 count++;
             } while (firstLine[2] > 0);
 
@@ -71,9 +73,12 @@ namespace Hashcode2020CSharp
             Writer(sb.ToString());
         }
 
-        private void RemoveScanned()
+        private void RemoveScanned(int[] booksScanned)
         {
-            //TODO: remove scanned books from list
+            foreach (Library lb in libraries)
+            {
+                lb.RemoveItemsAlreadyScanned(booksScanned);
+            }
         }
         private int[] Parsing (string[] sourceToParse)
         {

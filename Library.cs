@@ -12,7 +12,7 @@ namespace Hashcode2020CSharp
         public int timeScan { get; set; }
         public int booksPerDay { get; set; }
         public int id { get; set; }
-        public int[] books { get; set; } //TODO: delete duplicates in constructor
+        public int[] books { get; set; }
         public int points { get; set; }
         public double factor { get; set; }
 
@@ -31,6 +31,14 @@ namespace Hashcode2020CSharp
         {
             timeScan = (int)Math.Round((double)books.Length / booksPerDay, 0, MidpointRounding.AwayFromZero);
             factor = points / (timeSignUp + timeScan);
+        }
+
+        public void RemoveItemsAlreadyScanned(int[] scanned)
+        {
+            foreach (int i in scanned)
+            {
+                books = books.Where(val => val != i).ToArray();
+            }
         }
     }
 }
