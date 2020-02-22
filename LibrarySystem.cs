@@ -40,6 +40,7 @@ namespace Hashcode2020CSharp
                 CalculateFactor();
                 int idMax = 0;
                 double max = 0;
+
                 foreach (Library lb in libraries)
                 {
                     if (max < lb.factor)
@@ -62,12 +63,12 @@ namespace Hashcode2020CSharp
                 sb.Append("\n");
 
                 libraries.Remove(maxFactorLibrary);
-                firstLine[2] -= maxFactorLibrary.timeScan + maxFactorLibrary.timeSignUp;
+                firstLine[2] -= maxFactorLibrary.timeSignUp;
 
                 RemoveScanned(maxFactorLibrary.books);
 
                 count++;
-            } while (firstLine[2] > 0);
+            } while (firstLine[2] > 0 && libraries.Count != 0);
 
             sb.Insert(0, count + "\n");
             Writer(sb.ToString());
@@ -148,6 +149,7 @@ namespace Hashcode2020CSharp
             {
                 fileOutput.Write(outputString);
             }
+            Debug.WriteLine("Finished :" + output);
         }
         #endregion
     }
