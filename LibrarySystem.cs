@@ -110,7 +110,7 @@ namespace Hashcode2020CSharp
                 {
                     firstLine = Parsing(fileInput.ReadLine().Split());
                     bs = Parsing(fileInput.ReadLine().Split());
-                } catch (Exception e) { }
+                } catch (Exception e) { ExceptionHandler.HandleException(e); }
                 
                 int i = 0;
 
@@ -124,7 +124,7 @@ namespace Hashcode2020CSharp
                         try
                         {
                             fl = Parsing(ln.Split());
-                        } catch (Exception e) { }
+                        } catch (Exception e) { ExceptionHandler.HandleException(e); }
 
                         pairOrNot = false;
                     }
@@ -135,7 +135,7 @@ namespace Hashcode2020CSharp
                             sl = Parsing(ln.Split());
                             libraries.Add(new Library(fl, sl, i));
                             i++;
-                        } catch (Exception e) { }
+                        } catch (Exception e) { ExceptionHandler.HandleException(e); }
 
                         pairOrNot = true;
                     }
