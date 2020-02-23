@@ -14,6 +14,7 @@ namespace Hashcode2020CSharp
         public int id { get; set; }
         public int[] books { get; set; }
         public int points { get; set; }
+        public int[] factorPerDay { get; set; }
         public double factor { get; set; }
 
         public Library(int[] fl, int[] sl, int id)

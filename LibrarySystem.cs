@@ -34,9 +34,10 @@ namespace Hashcode2020CSharp
             StringBuilder sb = new StringBuilder();
             int count = 0;
 
+            SortByValue();
+
             do
             {
-
                 CalculateFactor();
                 int idMax = 0;
                 double max = 0;
@@ -72,6 +73,29 @@ namespace Hashcode2020CSharp
 
             sb.Insert(0, count + "\n");
             Writer(sb.ToString());
+        }
+
+        private void SortByValue()
+        {
+            foreach (Library lb in libraries)
+            {
+                List<Book> books = new List<Book>();
+                int[] i = lb.books;
+                foreach(int j in i)
+                {
+                    books.Add(new Book(j, bs[j]));
+                }
+                books.Sort();
+                int[] ret = new int[books.Count];
+                int k = 0;
+                foreach (Book bk in books)
+                {
+                    ret[k] = bk.id;
+                    k++;
+                }
+
+                lb.books = ret;
+            }
         }
 
         private void RemoveScanned(int[] booksScanned)
