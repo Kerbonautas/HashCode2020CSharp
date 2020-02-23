@@ -8,7 +8,7 @@ namespace Hashcode2020CSharp
     {
         public int id { get; set; }
         public int value { get; set; }
-        public Book (int id, int value)
+        public Book(int id, int value)
         {
             this.id = id;
             this.value = value;

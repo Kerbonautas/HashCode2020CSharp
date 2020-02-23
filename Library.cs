@@ -25,7 +25,7 @@ namespace Hashcode2020CSharp
             points = 0;
             this.id = id;
 
-            books = sl.Distinct().ToArray();
+            books = sl;
         }
 
         public void SetFactor()

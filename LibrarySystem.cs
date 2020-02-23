@@ -124,6 +124,26 @@ namespace Hashcode2020CSharp
                 lb.SetFactor();
             }
         }
+        private int[] SetBooksArray(int[]rawBooks)
+        {
+            List<Book> books = new List<Book>();
+            
+            foreach(int book in rawBooks.Distinct().ToArray())
+            {
+                books.Add(new Book(book, bs[book]));
+            }
+
+            books = books.OrderBy(x => x.value).ToList();
+
+            int[] booksSorted = new int[books.Count];
+            int i = 0;
+            foreach (Book book in books)
+            {
+                booksSorted[i] = book.id;
+                i++;
+            }
+            return booksSorted;
+        }
 
         #region txt actions
         private void Reader()
@@ -157,6 +177,7 @@ namespace Hashcode2020CSharp
                         try
                         {
                             sl = Parsing(ln.Split());
+                            sl = SetBooksArray(sl);
                             libraries.Add(new Library(fl, sl, i));
                             i++;
                         } catch (Exception e) { ExceptionHandler.HandleException(e); }
