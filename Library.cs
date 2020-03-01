@@ -7,39 +7,63 @@ namespace Hashcode2020CSharp
 {
     class Library
     {
-        public int numberOfBooks { get; set; }
         public int timeSignUp { get; set; }
-        public int timeScan { get; set; }
+        public int timeScan { get; set; } // Time needed to scan all books
         public int booksPerDay { get; set; }
         public int id { get; set; }
-        public int[] books { get; set; }
+        public List<Book> books { get; set; }
         public int points { get; set; }
-        public int[] factorPerDay { get; set; }
         public double factor { get; set; }
 
-        public Library(int[] fl, int[] sl, int id)
+        public Library(int[] fl, List<Book> sl, int id)
         {
-            numberOfBooks = fl[0];
             timeSignUp = fl[1];
             booksPerDay = fl[2];
-            points = 0;
             this.id = id;
 
-            books = sl;
+            books = sl.OrderByDescending(x => x.value).ToList();
+            SetTimeScan();
+            CalculatePoints();
         }
 
-        public void SetFactor()
+        public void SetTimeScan() { timeScan = (int)Math.Round((double)books.Count / booksPerDay, 0, MidpointRounding.AwayFromZero); }
+        public void SetTimeScan(int days) {timeScan = (int)Math.Round((double) days * booksPerDay / booksPerDay, 0, MidpointRounding.AwayFromZero); }
+        public void CalculatePoints()
         {
-            timeScan = (int)Math.Round((double)books.Length / booksPerDay, 0, MidpointRounding.AwayFromZero);
-            factor = points / (timeSignUp + timeScan);
-        }
+            points = 0;
 
-        public void RemoveItemsAlreadyScanned(int[] scanned)
-        {
-            foreach (int i in scanned)
+            foreach(Book b in books)
             {
-                books = books.Where(val => val != i).ToArray();
+                points += b.value;
             }
         }
+        public void SetFactor(int daysLeft)
+        {
+            /*
+             * First case: this library have time enough to send all books, library will set it factor with all books
+             * Second case: this library don't have time enough to send all books, library will set it factor with the books it can send and delete the rest of books
+             * Third case: this library use all time left with signup process, factor will be 0 in order to became the last library
+             */
+
+            if(daysLeft > timeSignUp + timeScan)
+            {
+                CalculatePoints();
+                factor = points / (timeSignUp + timeScan);
+            } else if(daysLeft > timeSignUp)
+            {
+                SetTimeScan(daysLeft - timeSignUp);
+
+                //books.RemoveRange(timeScan, books.Count);
+                CalculatePoints();
+
+                factor = points / (timeSignUp + timeScan);
+                
+            } else
+            {
+                factor = 0;
+            }
+        }
+
+        public void RemoveItemsAlreadyScanned(List<Book> alreadyScanned) { foreach (Book bk in alreadyScanned) books.Remove(books.Find(x => x.id == bk.id)); }
     }
 }

@@ -12,11 +12,11 @@ namespace Hashcode2020CSharp
     {
         public string input { get; set; }
         public string output { get; set; }
-        public int[] firstLine { get; set; }
-        public int[] fl { get; set; }
-        public int[] sl { get; set; }
-        public int[] bs { get; set; }
-        public List<Library> libraries = new List<Library>();
+        public int[] firstLine { get; set; } //0-Number of books, 1-Number of libraries, 2-Days for the process
+        public int[] fl { get; set; } //To create libraries //0-Numbre of books, 1-signup time, 2-Scan books per day
+
+        public List<Book> bs = new List<Book>(); //List with all books with their points
+        public List<Library> libraries = new List<Library>(); //List with all libraries
 
         public LibrarySystem(string input, string output)
         {
@@ -30,43 +30,32 @@ namespace Hashcode2020CSharp
         private void Run()
         {
             Reader();
-            
+
             StringBuilder sb = new StringBuilder();
             int count = 0;
-
-            SortByValue();
 
             do
             {
                 CalculateFactor();
-                int idMax = 0;
-                double max = 0;
 
-                foreach (Library lb in libraries)
+                libraries = libraries.OrderByDescending(x => x.factor).ToList();
+
+                sb.AppendLine(libraries[0].id + " " + libraries[0].books.Count);
+
+                foreach (Book bk in libraries[0].books)
                 {
-                    if (max < lb.factor)
-                    {
-                        idMax = lb.id;
-                        max = lb.factor;
-                    }
-                }
-
-                Library maxFactorLibrary = libraries.Find(x => x.id == idMax);
-
-                sb.AppendLine(maxFactorLibrary.id + " " + maxFactorLibrary.books.Length);
-
-                foreach (int i in maxFactorLibrary.books)
-                {
-                    sb.Append(i + " ");
+                    sb.Append(bk.id + " ");
                 }
 
                 sb.Remove(sb.Length - 1, 1);
                 sb.Append("\n");
 
-                libraries.Remove(maxFactorLibrary);
-                firstLine[2] -= maxFactorLibrary.timeSignUp;
 
-                RemoveScanned(maxFactorLibrary.books);
+                firstLine[2] -= libraries[0].timeSignUp;
+
+                List<Book> booksToRemove = libraries[0].books;
+                libraries.Remove(libraries[0]);
+                RemoveScanned(booksToRemove);
 
                 count++;
             } while (firstLine[2] > 0 && libraries.Count != 0);
@@ -75,74 +64,54 @@ namespace Hashcode2020CSharp
             Writer(sb.ToString());
         }
 
-        private void SortByValue()
+        private void CalculateFactor()
         {
-            foreach (Library lb in libraries)
+            foreach(Library lb in libraries)
             {
-                List<Book> books = new List<Book>();
-                int[] i = lb.books;
-                foreach(int j in i)
-                {
-                    books.Add(new Book(j, bs[j]));
-                }
-                books.Sort();
-                int[] ret = new int[books.Count];
-                int k = 0;
-                foreach (Book bk in books)
-                {
-                    ret[k] = bk.id;
-                    k++;
-                }
-
-                lb.books = ret;
+                lb.SetFactor(firstLine[2]);
             }
         }
 
-        private void RemoveScanned(int[] booksScanned)
+        private void RemoveScanned(List<Book> scannedBooks)
         {
             foreach (Library lb in libraries)
             {
-                lb.RemoveItemsAlreadyScanned(booksScanned);
+                lb.RemoveItemsAlreadyScanned(scannedBooks);
             }
         }
-        private int[] Parsing (string[] sourceToParse)
+
+        private int[] ParseToIntArray (string[] sourceToParse)
         {
             int[] intArray = Array.ConvertAll<string, int>(sourceToParse, int.Parse);
             return intArray;
         }
 
-        private void CalculateFactor()
+        private void parseInitialBooks (string[] sourceToParse)
         {
-            foreach (Library lb in libraries)
+            //This method receive all book values and generate the list with all pairs of id and value
+
+            int[] intArray = Array.ConvertAll<string, int>(sourceToParse, int.Parse);
+
+            for (int i = 0; i < intArray.Length; i++)
             {
-                int result = 0;
-                foreach (int i in lb.books)
-                {
-                    result += bs[i];
-                }
-                lb.points = result;
-                lb.SetFactor();
+                bs.Add(new Book(i, intArray[i]));
             }
         }
-        private int[] SetBooksArray(int[]rawBooks)
+
+        private List<Book> ParseBooks(string[] sourceToParse)
         {
-            List<Book> books = new List<Book>();
-            
-            foreach(int book in rawBooks.Distinct().ToArray())
+            //This method receive an string array and return a list with the books referred to the array id's
+            int[] intArray = Array.ConvertAll<string, int>(sourceToParse, int.Parse);
+
+            List<Book> returnedBooks = new List<Book>();
+
+            foreach (int i in intArray)
             {
-                books.Add(new Book(book, bs[book]));
+                returnedBooks.Add(bs.Find(x => x.id == i));
             }
 
-            books = books.OrderBy(x => x.value).ToList();
-
-            int[] booksSorted = new int[books.Count];
-            int i = 0;
-            foreach (Book book in books)
-            {
-                booksSorted[i] = book.id;
-                i++;
-            }
-            return booksSorted;
+            //This will remove duplicatd books and return it
+            return returnedBooks.Distinct().ToList();
         }
 
         #region txt actions
@@ -152,8 +121,8 @@ namespace Hashcode2020CSharp
             {
                 try
                 {
-                    firstLine = Parsing(fileInput.ReadLine().Split());
-                    bs = Parsing(fileInput.ReadLine().Split());
+                    firstLine = ParseToIntArray(fileInput.ReadLine().Split());
+                    parseInitialBooks(fileInput.ReadLine().Split());
                 } catch (Exception e) { ExceptionHandler.HandleException(e); }
                 
                 int i = 0;
@@ -167,7 +136,7 @@ namespace Hashcode2020CSharp
                     {
                         try
                         {
-                            fl = Parsing(ln.Split());
+                            fl = ParseToIntArray(ln.Split());
                         } catch (Exception e) { ExceptionHandler.HandleException(e); }
 
                         pairOrNot = false;
@@ -176,9 +145,10 @@ namespace Hashcode2020CSharp
                     {
                         try
                         {
-                            sl = Parsing(ln.Split());
-                            sl = SetBooksArray(sl);
+                            List<Book> sl = new List<Book>();
+                            sl = ParseBooks(ln.Split());
                             libraries.Add(new Library(fl, sl, i));
+
                             i++;
                         } catch (Exception e) { ExceptionHandler.HandleException(e); }
 
