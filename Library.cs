@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -27,7 +28,7 @@ namespace Hashcode2020CSharp
         }
 
         public void SetTimeScan() { timeScan = (int)Math.Round((double)books.Count / booksPerDay, 0, MidpointRounding.AwayFromZero); }
-        public void SetTimeScan(int days) {timeScan = (int)Math.Round((double) days * booksPerDay / booksPerDay, 0, MidpointRounding.AwayFromZero); }
+        public void SetTimeScan(int days) { timeScan = days; }
         public void CalculatePoints()
         {
             points = 0;
@@ -53,7 +54,13 @@ namespace Hashcode2020CSharp
             {
                 SetTimeScan(daysLeft - timeSignUp);
 
-                //books.RemoveRange(timeScan, books.Count);
+                int maxSendBooks = timeScan * booksPerDay;
+
+                if (maxSendBooks < books.Count)
+                {
+                    books.RemoveRange(maxSendBooks, books.Count - maxSendBooks);
+                }
+
                 CalculatePoints();
 
                 factor = points / (timeSignUp + timeScan);

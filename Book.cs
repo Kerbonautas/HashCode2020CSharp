@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Hashcode2020CSharp
 {
-    class Book : IComparable<Book>
+    class Book
     {
         public int id { get; set; }
         public int value { get; set; }
@@ -12,11 +12,6 @@ namespace Hashcode2020CSharp
         {
             this.id = id;
             this.value = value;
-        }
-
-        public int CompareTo(Book element)
-        {
-            return element.value - value;
         }
     }
 }
